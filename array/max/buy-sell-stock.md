@@ -14,6 +14,10 @@ Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-
 ```
 
 #### Answer One(O(n^2)Runtime 460ms)
+The basic idea is about finding the max value and the min value.
+
+Restricted condition is that the index of the max value is above the index of the min value.
+
 Max Profit is dynamically decided by comparing the current profit with the previous profit.
 
 ```javascript
@@ -43,6 +47,17 @@ var maxProfit = function(prices) {
 
 
 #### Answer Two(O(n), Run Time 64ms)
-The basic idea is about finding the max value and the min value.
+This algorithm saves the loop by looking for the maxProfit as well as looking for the min value.
 
-Restricted condition is that the index of the max value is above the index of the min value.
+The trick thing is that it supposes the min value is the biggest integer. Imperatively, the first element is supposedly to be the min value.
+```javascript
+var maxProfit = function(prices) {
+  let min = Number.MAX_SAFE_INTEGER;
+  let maxProfit = 0;
+    for (var i = 0; i < prices.length; i++) {
+        min = Math.min(min, prices[i]);
+        maxProfit = Math.max(maxProfit, prices[i] - min);
+    }
+  return maxProfit;
+};
+```
