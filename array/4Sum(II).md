@@ -54,4 +54,40 @@ var fourSumCount = function(A, B, C, D) {
 ```
 
 
-#### Answer Two[156ms]
+#### Answer Two[O(n^2)156ms]
+It creates two maps `sum1` and `sum2`. They treat sum value as its map key, and sum value count as its map value.
+
+If sum1 has the absolute key value of sum2, then multiple `sum1`'s map value and `sum2`'s map value.
+
+Compared to the previous answer, this answer uses map over object, which produces fast runtime.
+
+The advantages of using map are: 1. it doesn't need to iterate object prototype. 2.it can store any type as its key. (object's key must be string).
+
+Because the sum value and the count are both of type number(key and value are the same type), it would be better to use map over object in this case.
+```javascript
+var fourSumCount = function(A, B, C, D) {
+  const sumTwoList = function(x,y){
+    let len = x.length;
+    let result = new Map();
+    for(let i = 0; i < len; i++){
+        for(let j = 0; j < len; j++){
+           let c = x[i] + y[j];
+           result.set(c, result.get(c) + 1 || 1);
+        }
+    }
+    return result;
+}
+
+  let sum1 = sumTwoList(A,B);
+  let sum2 = sumTwoList(C,D);
+  let total = 0;
+
+  sum1.forEach((value,key) =>{
+      let offset = 0 - key;
+      if(sum2.has(offset)){
+          total += (sum2.get(offset) * sum1.get(key));
+      }
+  })
+  return total;
+};
+```
