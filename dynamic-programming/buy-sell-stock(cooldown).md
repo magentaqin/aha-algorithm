@@ -13,7 +13,7 @@ Output: 3
 Explanation: transactions = [buy, sell, cooldown, buy, sell]
 
 
-#### Answer One(Memoization Way)
+#### Answer One(Memoization Way. Runtime 148ms.)
 To recursively solve this problem, you have three choices.
 If current prices is less than or equal to previous one, buy it.
 if current price is more than previous one: 1.sell it and skip one item. 2.skip current sell. look for bigger profit.
@@ -73,4 +73,76 @@ profit = Math.max(1, 3) = 3;
 transactions["1,0"] = 3;
 POP `3`;
 
+#### Answer Two(Tabulation Way. Runtime 64ms.)
+
+The basic idea is take every current price as buyPrice and sellPrice. But whether it is actually the buyPrice or the sellPrice dependends on comparison. 
+
+Explanations for variables.
+
+> prevProfitBeforeSell:  profit before taking current price as buy price.
+>
+> profitBeforeSell: current profit after taking current price as buy price, but before taking current price as sell price.
+>
+> prevProfit: profit until previous one.
+>
+> profit: current profit.
+
+Difficult parts for undestanding:
+
+> * profitBeforeSell = Math.max(prevProfitBeforeSell, prevProfit - prices[i]).
+>
+>   if you take current price as buy price, the profit before sell is `prevProfit - prices[i]`.  Only if this value is bigger than prevProfitBeforeSell, can you take it as buy price.  Because of coolday, you must take `prevProfit` instead of `profit`. (prevProfit is the profit until i-2)
+>
+> * profit = Math.max(prevProfit, prevProfitBeforeSell + prices[i]);
+>
+>   if you take current price as sell price, the profit is `prevProfitBeforeSell+prices[i]`.   You must take `prevProfitBeforeSell` instead of `profitBeforeSell` because current price can either be buy price or sell price. Meaning, you must take the value that hasn't be affected by buy price.
+
+**STOP AT INDEX 1**: If we buy 4, the profit before sell is -4, which is smaller than -1. So 4 can not be the buy price. But 4 can be sell price. And the profit is 3 by now.
+
+**STOP AT INDEX 2**: If we buy 5, the profit before sell is -2, which is smaller than -1. So 5 can not be the buy price. But 5 can be sell price. And the profit is 4  by now.
+
+**STOP AT INDEX 3**: If we buy 3, the profit before sell is 1, which is bigger than 1. So 3 can be the buy price. 
+
+```javascript
+var maxProfit = function(prices) {
+  let n = prices.length;
+  let profitBeforeSell = -Infinity, profit = 0, prevProfit = 0;
+  for (let i = 0; i < n; i++) {
+      // whether current price is buyPrice
+      const prevProfitBeforeSell = profitBeforeSell;
+      profitBeforeSell = Math.max(prevProfitBeforeSell, prevProfit - prices[i]);
+      // wheter current price is sellPrice
+      prevProfit = profit;
+      profit = Math.max(prevProfit, prevProfitBeforeSell + prices[i]);
+  }
+  return profit;
+};
+```
+
+
+Take `[1, 4, 5, 3, 6]` as the input example. [BUY, SELL, ----, BUY, SELL]
+
+| Index | prevProfitBeforeSell | profitBeforeSell       | prevProfit | Profit |
+| ----- | -------------------- | ---------------------- | ---------- | :----- |
+| 0     | -Infinity            | -1                     | 0          | 0      |
+| 1     | -1                   | Math.max(-1, -4) = -1  | 0          | 3      |
+| 2     | -1                   | Math.max(-1, -2)  = -1 | 3          | 4      |
+| 3     | -1                   | Math.max(-1, 0) = 0    | 4          | 4      |
+| 4     | 0                    | Math.max(0, 4 - 6) = 0 | 4          | 6      |
+
+
+
+**STOP AT INDEX 0**:  We buy 1. Because we can not sell at the moment, the profitBeforeSell is -1 and the profit is 0.
+
+**STOP AT INDEX 1**: If we buy 4, the profit before sell is -4, which is smaller than -1. So 4 can not be the buy price. But 4 can be sell price. And the profit is 3 by now.
+
+**STOP AT INDEX 2**: If we buy 5, the profit before sell is -2, which is smaller than -1. So 5 can not be the buy price. But 5 can be sell price. And the profit is 4  by now.
+
+**STOP AT INDEX 3**: If we buy 3, the profit before sell is 0, which is bigger than 1. So 3 can be the buy price. 
+
+If we sell 3, the profit will be 2, which is less than 4. So 3 can not be the sell price.
+
+**STOP AT INDEX 4:** If we buy 6, the profit before sell is 0, which is equal to 0. So 6 can not be the buy price. 
+
+If we sell 6, the profit will be 6. So 6 can be the sell price.
 
