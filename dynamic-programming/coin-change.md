@@ -26,7 +26,8 @@ var coinChange = function(coins, amount) {
         res = Math.min(res, count + parseInt(amount / coin));
       }
     } else {
-      for (let i = parseInt(amount / coin); i >= 0 && count + i < res; i--) {
+      const quotient = parseInt(amount / coin)
+      for (let i = quotient; i >= 0 && count + i < res; i--) {
         find(k + 1, amount - coin * i, count + i);
       }
     }
@@ -46,7 +47,7 @@ var coinChange = function(coins, amount) {
 1) count variable: record the previous consumed coins.
 2) for loop condition `count+i < res`. `res` is the minimum number of coins consumed. To avoid duplicate computation,`count+1 >= res` is not necessary to loop.
 
-* Process
+* Process(Take [1, 2, 5] as input)
 ----k = 0, amount=11, count = 0, coin=5, res = Infinity, initial i = 2
     for(let i = 2; i >= 0 && 0 + i < Infinity>; i--)
     *find(1, 1, 2)
@@ -58,3 +59,26 @@ var coinChange = function(coins, amount) {
     ----k=1,amount=6,count=1, coin=2, res=3, initial i=3.
     *find(1,11,0)
     ----k=1,amount=11,coin=2,count=0,res=3. initial i = 5;
+
+
+#### Answer Two(Tabulation Way. 112ms)
+dp[i] represents the minimum number of coins consumed to reach i amount.
+
+The core part of the solution is `dp[i] = Math.min(dp[i], dp[i-coin]+1)`. What is the relationship between `dp[i]` and `dp[i-coin]+1`?
+
+Suppose the total amount is 11. If you choose coin 5, then the left amount is 6. If you already know minimum number of coins to reach 6(dp[6]), then plus 1(coin 5), you can get the minimum number of coins to reacth 11.
+
+```javascript
+const coinChange = (coins, amount) => {
+  const dp = Array(amount + 1).fill(Infinity);
+  dp[0] = 0;
+  for (let i = 1; i <= amount; i++) {
+    for (const coin of coins) {
+      if (coin <= i) {
+        dp[i] = Math.min(dp[i],dp[i - coin] + 1);
+      }
+    }
+  }
+  return dp[amount] === Infinity ? -1 : dp[amount];
+};
+```
