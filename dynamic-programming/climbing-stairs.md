@@ -38,3 +38,26 @@ var climbStairs = function(n) {
   return climbWays[n];
 };
 ```
+
+#### Answer Two(Memoization Way. 52ms)
+```javascript
+var climbStairs = function(n) {
+  const cache = [0,1,2]
+  const getPrev = (x) => {
+    let value = cache[x];
+    if(value) {
+      return value;
+    }
+    value = climb(x);
+    cache[x] = value;
+    return value;
+  }
+  const climb = (k) => {
+    if (k === 0) return 0;
+    if (k === 1) return 1;
+    if (k === 2) return 2;
+    return getPrev(k-1) + getPrev(k-2);
+  }
+  return climb(n);
+};
+```
