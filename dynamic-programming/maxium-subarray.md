@@ -13,7 +13,7 @@ If you have figured out the O(n) solution, try coding another solution using the
 #### Solution One(DP, Runtime 64ms)
 `dp[i]` indicates the max value you can get when moves to `i` index of nums array.
 
-The tricky part is
+The tricky part is that you need `currentSum` to help you decide whether you need prev subarray. (Because the subarray must be contiguous, and the current value must be considered.)
 
 ```javascript
 var maxSubArray = function(nums) {
@@ -22,9 +22,25 @@ var maxSubArray = function(nums) {
   let currentSum = nums[0]
   for (let i = 1; i < nums.length; i++) {
     const current = nums[i];
-    currentSum = Math.max(current, currentSum + current);
+    const prevCurrentSum = currentSum;
+    currentSum = Math.max(current, prevCurrentSum + current);
     dp[i] = Math.max(currentSum, dp[i-1]);
   }
   return dp[nums.length-1];
 };
 ```
+
+Take input `[-2,1,-3,4,-1,2,1]` as an example:
+
+| i    | current | prevCurrentSum | currentSum | dp[i] |
+| ---- | ------- | :------------- | ---------- | ----- |
+| 1    | 1       | -2             | 1          | 1     |
+| 2    | -3      | 1              | -2         | 1     |
+| 3    | 4       | -2             | 4          | 4     |
+| 4    | -1      | 4              | 3          | 4     |
+| 5    | 2       | 3              | 5          | 5     |
+| 6    | 1       | 5              | 6          | 6     |
+
+
+
+#### Solution Two(Divide and Conquer)
