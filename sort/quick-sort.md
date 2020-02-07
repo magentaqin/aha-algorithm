@@ -13,6 +13,8 @@ To be mentioned, in the "qualified" array, the pivot element you picked at the b
 
 In the example, the pivot element is 7. After calling `partSort`, the qualified array is `[5, 3, 2, 6, 7, 9]`, and the pivot index changes from `2` to `4`. Next, you only have to peform the same action on `[5, 3, 2, 6]` and `[7, 9]`.
 
+Edge case: [1, 1, 1]
+
 ```javascript
 var items = [5, 3, 7, 6, 2, 9];
 
@@ -27,6 +29,7 @@ function partSort(items, leftPointer, rightPointer) {
   const pivot = items[pivotIndex]; // middle element
   let i = leftPointer;
   let j = rightPointer;
+  // notice i <= j, not i < j
   while (i <= j) {
     // iterate array. stop at the element that are equal or greater than pivot.
     while(items[i] < pivot) {
@@ -38,7 +41,7 @@ function partSort(items, leftPointer, rightPointer) {
       j--;
     }
 
-    // swap these unqualified elements and move on.
+    // swap these unqualified elements and move on. notice i<=j, not i < j.
     if (i <= j) {
       swap(items, i, j);
       i++;
