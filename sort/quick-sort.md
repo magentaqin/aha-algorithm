@@ -8,10 +8,10 @@
 
 #### Algorithm
 Choose the middle element as the pivot element.
-After calling `partSort` function, the array is basically "qualified". That is, elements that are smaller than pivot element are on the left side, and elements that are greater than pivot element are on the right side.
+After calling `partition` function, the array is basically "qualified". That is, elements that are smaller than pivot element are on the left side, and elements that are greater than pivot element are on the right side.
 To be mentioned, in the "qualified" array, the pivot element you picked at the beginning has been changed.
 
-In the example, the pivot element is 7. After calling `partSort`, the qualified array is `[5, 3, 2, 6, 7, 9]`, and the pivot index changes from `2` to `4`. Next, you only have to peform the same action on `[5, 3, 2, 6]` and `[7, 9]`.
+In the example, the pivot element is 7. After calling `partition`, the qualified array is `[5, 3, 2, 6, 7, 9]`, and the pivot index changes from `2` to `4`. Next, you only have to peform the same action on `[5, 3, 2, 6]` and `[7, 9]`.
 
 Edge case: [1, 1, 1]
 
@@ -24,7 +24,7 @@ function swap(items, leftPointer, rightPointer) {
   items[rightPointer] = temp;
 }
 
-function partSort(items, leftPointer, rightPointer) {
+function partition(items, leftPointer, rightPointer) {
   const pivotIndex = Math.floor((leftPointer + rightPointer) / 2);
   const pivot = items[pivotIndex]; // middle element
   let i = leftPointer;
@@ -53,7 +53,7 @@ function partSort(items, leftPointer, rightPointer) {
 
 function quickSort(items, leftPointer, rightPointer) {
   let index;
-  index = partSort(items, leftPointer, rightPointer);
+  index = partition(items, leftPointer, rightPointer);
   // sort left side
   if (leftPointer < index - 1) {
     quickSort(items, leftPointer, index - 1);
